@@ -1,0 +1,42 @@
+blueprint:
+  name: ZHA - Netvox single button
+  description: Control anything using Netvox wireless switch
+
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: Netvox wireless switch to use
+      selector:
+        device:
+          integration: zha
+          manufacturer: netvox
+          model: ZB02AE3D
+    button_toggle:
+      name: Button toggle
+      description: Action to run on press of button
+      default: []
+      selector:
+        action:
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      device_id: !input remote
+
+action:
+  - variables:
+      command: "{{ trigger.event.data.command }}"
+      cluster_id: "{{ trigger.event.data.cluster_id }}"
+      endpoint_id: "{{ trigger.event.data.endpoint_id }}"
+      args: "{{ trigger.event.data.args }}"
+  - choose:
+      - conditions:
+          - "{{ command == 'toggle' }}"
+          - "{{ cluster_id == 6 }}"
+          - "{{ endpoint_id == 1 }}"
+        sequence: !input button_toggle
