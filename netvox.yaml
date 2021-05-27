@@ -11,7 +11,7 @@ blueprint:
         device:
           integration: zha
           manufacturer: netvox
-          model:
+          model: ZB02AE3ED
     button_toggle:
       name: Button toggle
       description: Action to run on press of button
